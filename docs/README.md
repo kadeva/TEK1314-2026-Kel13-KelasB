@@ -58,6 +58,7 @@ Diagram lengkap tersedia pada:
 `docs/design/topology.png`
 
 
+
 ## Rencana IP Address
 
 Alamat IP Tailscale akan diperoleh secara otomatis setelah setiap node bergabung ke jaringan Tailscale yang sama.
@@ -68,8 +69,11 @@ Alamat IP Tailscale akan diperoleh secara otomatis setelah setiap node bergabung
 | Target     | SRV-IOT            | Ubuntu Server  | TBD          | Web app, API, dan database  |
 | Monitoring | SOC-SECURITY-ONION | Security Onion | TBD          | Monitoring dan analisis log |
 
-**Detail IP Address Plan tersedia pada:
-docs/design/ip-plan.md**
+Detail IP Address Plan tersedia pada:
+
+`docs/design/ip-plan.md`
+
+
 
 ## Service yang Direncanakan
 
