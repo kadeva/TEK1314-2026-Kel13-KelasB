@@ -92,6 +92,7 @@ Web server Apache atau Nginx
 |   80 | TCP      | HTTP          | Web application dan REST API |
 |  443 | TCP      | HTTPS         | Web application terenkripsi  |
 | 3306 | TCP      | MySQL/MariaDB | Database backend internal    |
+
 Database direncanakan hanya menerima koneksi lokal dari aplikasi dan tidak diekspos langsung kepada Attacker Node.
 
 ## 5. Monitoring Node
