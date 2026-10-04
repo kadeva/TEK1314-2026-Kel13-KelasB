@@ -27,6 +27,7 @@ Tailscale:
 Seluruh pengujian direncanakan hanya dilakukan pada lingkungan laboratorium
 kelompok dengan menggunakan data sintetis atau dummy.
 
+
 ## Rancangan Topologi
 
 Ketiga node direncanakan terhubung melalui encrypted overlay network
@@ -52,8 +53,10 @@ Ketiga node direncanakan terhubung melalui encrypted overlay network menggunakan
 
 Security Onion direncanakan sebagai Monitoring Node. Metode agar Security Onion memperoleh visibility terhadap traffic Attacker menuju Target masih dalam tahap pengujian dan akan dikonfirmasi pada fase implementasi.
 
-**Diagram lengkap tersedia pada:
-docs/design/topology.png**
+Diagram lengkap tersedia pada:
+
+`docs/design/topology.png`
+
 
 ## Rencana IP Address
 
