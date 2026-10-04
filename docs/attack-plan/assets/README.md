@@ -88,7 +88,6 @@ Security Onion alert atau Hunt result
 
 Packet capture
 
-
 Catatan timestamp pengujian
 
 ## Status Pengujian
