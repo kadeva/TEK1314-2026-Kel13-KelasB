@@ -83,9 +83,13 @@ Status yang digunakan:
 
 Planned: Belum dilaksanakan
 **Ready**: Target dan monitoring sudah siap
+
 **In Progress**: Sedang dilaksanakan
+
 **Completed**: Pengujian telah selesai
+
 **Verified**: Hasil Red Team telah dicocokkan dengan bukti Blue Team
+
 **Cancelled**: Pengujian dibatalkan atau tidak lagi relevan
 
 ## Aturan Pengujian
