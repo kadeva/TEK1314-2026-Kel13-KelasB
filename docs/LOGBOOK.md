@@ -41,7 +41,7 @@ anggota yang menghasilkan pekerjaan tersebut.
 | 27-09-2026 | Bintang dan Izzy | Diskusi rancangan jaringan | Tailscale VPN dipilih sebagai rancangan awal koneksi antarnode | Selesai | Diskusi kelompok |
 | 04-10-2026 | Deval | Membuat struktur awal repository | Folder dokumentasi untuk design, hardening, attack plan, dan monitoring dibuat | Selesai | Commit GitHub |
 | 04-10-2026 | Deval | Menyusun README utama | Deskripsi proyek, arsitektur, role, service, dan status proyek didokumentasikan | Selesai | `README.md` |
-| 04-10-2026 | Bintang | Membuat draft topologi jaringan | Diagram Attacker, Target, Monitoring, dan Tailscale VPN dibuat | Selesai | `docs/design/topology.png` |
+| 04-10-2026 | Deval | Membuat draft topologi jaringan | Diagram Attacker, Target, Monitoring, dan Tailscale VPN dibuat | Selesai | `docs/design/topology.png` |
 | 04-10-2026 | Deval | Menyusun IP Address Plan | Alokasi node, service, dan IP Tailscale berstatus TBD didokumentasikan | Selesai | `docs/design/ip-plan.md` |
 | 04-10-2026 | Deval | Menyusun arsitektur sistem | Fungsi node, alur data, dan rancangan konektivitas didokumentasikan | Selesai | `docs/design/architecture.md` |
 | 04-10-2026 | Deval | Menyusun rencana hardening | Kontrol keamanan Target Node dan rencana bukti before-after disusun | Selesai | `docs/hardening/hardening-plan.md` |
