@@ -81,7 +81,8 @@ Catatan timestamp pengujian
 
 Status yang digunakan:
 
-Planned: Belum dilaksanakan
+**Planned**: Belum dilaksanakan
+
 **Ready**: Target dan monitoring sudah siap
 
 **In Progress**: Sedang dilaksanakan
