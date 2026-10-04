@@ -58,7 +58,7 @@ Monitoring Node
      | Monitoring method
 ```
 
-5. Rencana Pengujian Konektivitas
+## 5. Rencana Pengujian Konektivitas
 
 Setelah seluruh node terhubung ke Tailscale, kelompok akan melakukan:
 
@@ -69,7 +69,7 @@ Pengujian akses SSH yang telah diizinkan.
 Pengujian visibility traffic pada Monitoring Node.
 Dokumentasi source IP, destination IP, protocol, port, dan timestamp.
 
-6. Catatan Monitoring
+## 6. Catatan Monitoring
 
 Bergabungnya Security Onion ke jaringan Tailscale tidak secara otomatis menjamin bahwa Security Onion dapat melihat traffic antara Attacker Node dan Target Node.
 
@@ -83,7 +83,7 @@ Analisis log sistem dan aplikasi
 
 Metode final akan ditentukan berdasarkan hasil pengujian dan arahan dosen atau asisten praktikum.
 
-7. Data yang Akan Diperbarui
+## 7. Data yang Akan Diperbarui
 
 Setelah implementasi Tailscale selesai, data berikut akan diperbarui:
 
