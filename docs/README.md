@@ -106,20 +106,3 @@ Menyiapkan Attacker Node
 Menyusun attack plan
 Menghasilkan traffic pengujian terkontrol
 Mendokumentasikan command, target, waktu, dan hasil pengujian
-
-## Struktur Repository
-
-├── README.md
-├── LOGBOOK.md
-└── docs/
-    ├── design/
-    │   ├── topology.png
-    │   ├── topology.pkt
-    │   └── ip-plan.md
-    ├── installation/
-    │   └── assets/
-    ├── hardening/
-    │   └── assets/
-    ├── monitoring/
-    │   └── assets/
-    └── attack-plan/
