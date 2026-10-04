@@ -111,7 +111,11 @@ Alamat atau informasi sensitif lainnya
 Informasi sensitif pada screenshot dan output harus disensor sebelum diunggah.
 
 ## Dokumen Terkait
+
 Rancangan arsitektur: `../design/architecture.md`
+
 Perencanaan IP: `../design/ip-plan.md`
+
 Rencana hardening: `../hardening/hardening-plan.md`
+
 Rencana monitoring: `../monitoring/monitoring-plan.md`
