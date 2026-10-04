@@ -4,6 +4,7 @@ Folder ini berisi perencanaan, pelaksanaan, dan bukti pengujian keamanan
 yang dilakukan oleh Red Team terhadap Target Node dalam lingkungan
 laboratorium kelompok.
 
+
 ## Tujuan
 
 Dokumentasi Attack Plan digunakan untuk:
@@ -14,6 +15,7 @@ Dokumentasi Attack Plan digunakan untuk:
 - Mengumpulkan bukti aktivitas Red Team
 - Mencocokkan aktivitas dengan hasil monitoring Blue Team
 - Mengevaluasi efektivitas hardening pada Target Node
+
 
 ## Lingkungan Pengujian
 
@@ -26,6 +28,7 @@ Dokumentasi Attack Plan digunakan untuk:
 Seluruh node direncanakan terhubung melalui Tailscale VPN. IP aktual setiap
 node akan dicatat pada:
 `../design/ip-plan.md`
+
 
 Skenario yang Direncanakan
 
@@ -47,19 +50,27 @@ Verifikasi bahwa database tidak dapat diakses langsung dari Attacker Node dan ha
 Detail setiap skenario tersedia pada:
 `attack-plan.md`
 
+
 ## Format Bukti
 
 Setiap bukti menggunakan ID yang sesuai dengan skenario pengujian.
 
 Contoh penamaan file:
 
-`AP-01-red-output.txt
-AP-01-blue-log.png
-AP-02-http-response.txt
-AP-02-web-access-log.png
-AP-03-auth-test.png
-AP-03-auth-log.txt
-AP-04-port-verification.txt`
+`AP-01-red-output.txt`
+
+`AP-01-blue-log.png`
+
+`AP-02-http-response.txt`
+
+`AP-02-web-access-log.png`
+
+`AP-03-auth-test.png`
+
+`AP-03-auth-log.txt`
+
+`AP-04-port-verification.txt`
+
 
 Bukti dapat berupa:
 
@@ -73,10 +84,10 @@ Authentication log
 
 Web access log
 
-
 Security Onion alert atau Hunt result
 
 Packet capture
+
 
 Catatan timestamp pengujian
 
@@ -87,6 +98,7 @@ Catatan timestamp pengujian
 | AP-02 | Web and API Request Testing    | Planned |
 | AP-03 | Authentication Logging Test    | Planned |
 | AP-04 | Database Exposure Verification | Planned |
+
 
 Status yang digunakan:
 
@@ -102,6 +114,7 @@ Status yang digunakan:
 
 **Cancelled**: Pengujian dibatalkan atau tidak lagi relevan
 
+
 ## Aturan Pengujian
 
 Pengujian hanya dilakukan terhadap Target Node milik kelompok.
@@ -111,6 +124,7 @@ Setiap pengujian harus mencatat waktu mulai dan selesai.
 Seluruh data dan akun pengujian harus menggunakan data dummy.
 Pengujian dihentikan jika Target Node menjadi tidak stabil.
 Sistem publik dan perangkat pihak lain tidak termasuk dalam scope.
+
 
 ## Keamanan Dokumentasi
 Repository tidak boleh memuat:
@@ -123,6 +137,7 @@ Data pribadi
 Alamat atau informasi sensitif lainnya
 
 Informasi sensitif pada screenshot dan output harus disensor sebelum diunggah.
+
 
 ## Dokumen Terkait
 
