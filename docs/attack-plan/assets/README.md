@@ -62,13 +62,22 @@ AP-03-auth-log.txt
 AP-04-port-verification.txt`
 
 Bukti dapat berupa:
+
 Screenshot terminal
+
 Output command dalam format teks
+
 Request dan response HTTP yang telah disanitasi
+
 Authentication log
+
 Web access log
+
+
 Security Onion alert atau Hunt result
+
 Packet capture
+
 Catatan timestamp pengujian
 
 ## Status Pengujian
