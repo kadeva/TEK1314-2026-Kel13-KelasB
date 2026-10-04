@@ -50,3 +50,47 @@ Tailscale VPN
 SRV-IOT
 Target Node
 ```
+Monitoring Node akan bergabung ke jaringan Tailscale yang sama. Namun, metode agar Security Onion memperoleh visibility terhadap traffic antara Attacker Node dan Target Node masih perlu diuji pada tahap implementasi.
+```
+SOC-SECURITY-ONION
+Monitoring Node
+     |
+     | Monitoring method
+```
+
+5. Rencana Pengujian Konektivitas
+
+Setelah seluruh node terhubung ke Tailscale, kelompok akan melakukan:
+
+Verifikasi IP Tailscale setiap node.
+Pengujian ping dari Attacker Node menuju Target Node.
+Pengujian akses HTTP atau HTTPS menuju Target Node.
+Pengujian akses SSH yang telah diizinkan.
+Pengujian visibility traffic pada Monitoring Node.
+Dokumentasi source IP, destination IP, protocol, port, dan timestamp.
+
+6. Catatan Monitoring
+
+Bergabungnya Security Onion ke jaringan Tailscale tidak secara otomatis menjamin bahwa Security Onion dapat melihat traffic antara Attacker Node dan Target Node.
+
+Metode monitoring yang akan diuji meliputi:
+
+Routing traffic melalui Monitoring Node
+Traffic mirroring
+Packet capture pada Target Node
+Import file PCAP
+Analisis log sistem dan aplikasi
+
+Metode final akan ditentukan berdasarkan hasil pengujian dan arahan dosen atau asisten praktikum.
+
+7. Data yang Akan Diperbarui
+
+Setelah implementasi Tailscale selesai, data berikut akan diperbarui:
+
+IP Tailscale RED-KALI
+IP Tailscale SRV-IOT
+IP Tailscale SOC-SECURITY-ONION
+Status konektivitas setiap node
+Metode monitoring yang berhasil digunakan
+Port final yang dapat diakses
+
