@@ -28,20 +28,20 @@ node akan dicatat pada:
 `../design/ip-plan.md`
 
 Skenario yang Direncanakan
-AP-01: Network Reconnaissance
 
+AP-01: Network Reconnaissance
 Pengujian untuk mengidentifikasi port dan service yang dapat diakses pada Target Node.
 
-AP-02: Web and API Request Testing
 
+AP-02: Web and API Request Testing
 Pengujian respons web application dan REST API terhadap request normal serta input dummy yang tidak sesuai format.
 
-AP-03: Authentication Logging Test
 
+AP-03: Authentication Logging Test
 Pengujian pencatatan login SSH berhasil dan gagal menggunakan akun dummy yang telah disiapkan.
 
-AP-04: Database Exposure Verification
 
+AP-04: Database Exposure Verification
 Verifikasi bahwa database tidak dapat diakses langsung dari Attacker Node dan hanya tersedia bagi aplikasi yang membutuhkannya.
 
 Detail setiap skenario tersedia pada:
