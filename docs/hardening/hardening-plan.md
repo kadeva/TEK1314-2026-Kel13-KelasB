@@ -77,7 +77,7 @@ Status yang digunakan dalam dokumen ini:
 
 ### H-05: Mengaktifkan Host Firewall
 
-- **Status:** Planned
+- **Status:** In Progress
 - **Tujuan:** Membatasi koneksi masuk hanya untuk service yang diperlukan.
 - **Rencana implementasi:** Menggunakan UFW dengan kebijakan default deny incoming.
 - **Port yang direncanakan:**
