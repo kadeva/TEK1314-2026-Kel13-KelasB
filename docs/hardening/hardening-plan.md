@@ -1,4 +1,4 @@
-# Hardening Plan
+  # Hardening Plan
 
 ## 1. Tujuan
 
@@ -103,6 +103,30 @@ Status yang digunakan dalam dokumen ini:
   - `PerSourceMaxStartups none`
 - **Verifikasi lanjutan:** Menguji pembatasan autentikasi secara terkontrol pada
   tahap pengujian berikutnya.
+
+### H-04B: Mengaktifkan Fail2Ban untuk SSH
+
+- **Status:** Implemented
+- **Tujuan:** Membatasi percobaan autentikasi SSH berulang dari sumber yang sama.
+- **Implementasi:** Mengaktifkan service Fail2Ban dan jail `sshd`.
+- **Bukti before:**
+  - Service `fail2ban` berstatus `inactive (dead)`.
+  - Service belum diaktifkan saat boot (`disabled`).
+  - Perintah `fail2ban-client status sshd` gagal karena socket Fail2Ban
+    tidak tersedia.
+- **Bukti after:**
+  - Service `fail2ban` berstatus `active (running)`.
+  - Service telah diaktifkan saat boot (`enabled`).
+  - Jail `sshd` aktif.
+  - `maxretry` dikonfigurasi sebanyak `5`.
+  - `bantime` dikonfigurasi selama `3600` detik.
+- **Current state:**
+  - `Currently failed: 0`
+  - `Currently banned: 0`
+  - `Total banned: 0`
+- **Verifikasi lanjutan:** Melakukan percobaan login gagal secara terkontrol
+  dari Attacker Node untuk memastikan alamat sumber diblokir setelah mencapai
+  batas percobaan.
 
 ---
 
