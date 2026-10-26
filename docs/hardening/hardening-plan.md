@@ -2,8 +2,8 @@
 
 ## 1. Tujuan
 
-Dokumen ini menjelaskan rencana hardening pada Target Node yang menjalankan
-replika backend sistem IoT.
+Dokumen ini menjelaskan rencana dan progres hardening pada Target Node yang
+menjalankan replika backend sistem IoT.
 
 Hardening dilakukan untuk:
 
@@ -15,14 +15,15 @@ Hardening dilakukan untuk:
 
 ## 2. Informasi Target Node
 
-| Komponen | Rencana |
+| Komponen | Implementasi |
 |---|---|
 | Hostname | SRV-IOT |
 | Sistem Operasi | Ubuntu Server |
 | Fungsi | Replika backend IoT |
-| Web Server | Apache atau Nginx, TBD |
-| Backend/API | TBD |
-| Database | MySQL atau MariaDB, TBD |
+| IoT Platform | ThingsBoard |
+| Web Port | 8080/TCP |
+| Database | PostgreSQL |
+| Remote Administration | SSH pada 2222/TCP |
 | Jaringan | Tailscale VPN |
 | Data | Dummy atau sintetis |
 
@@ -32,46 +33,78 @@ Status yang digunakan dalam dokumen ini:
 
 - **Planned:** Belum diterapkan
 - **In Progress:** Sedang diterapkan atau diuji
-- **Implemented:** Sudah diterapkan
-- **Verified:** Sudah diuji dan memiliki bukti
+- **Implemented:** Sudah diterapkan, tetapi belum seluruhnya diverifikasi
+- **Verified:** Sudah diterapkan, diuji, dan memiliki bukti
 - **Not Applicable:** Tidak relevan dengan implementasi final
+
+---
 
 ## 4. Access and Authentication
 
 ### H-01: Menggunakan User Non-Root
 
-- **Status:** Planned
+- **Status:** Implemented
 - **Tujuan:** Mengurangi penggunaan akun dengan hak akses penuh.
-- **Rencana implementasi:** Membuat user administrator non-root dan menggunakan
-  `sudo` hanya ketika diperlukan.
-- **Bukti before:** Daftar user dan metode administrasi sebelum hardening.
-- **Bukti after:** Output identitas user dan keanggotaan grup `sudo`.
+- **Implementasi:** Administrasi server dilakukan menggunakan akun non-root
+  `kelompok13`.
+- **Current evidence:** Penggunaan akun `kelompok13` pada terminal server.
+- **Verifikasi lanjutan:** Menampilkan identitas user dan keanggotaan grup
+  administrator menggunakan `id` dan `groups`.
 
 ### H-02: Menonaktifkan Direct Root Login melalui SSH
 
-- **Status:** Planned
-- **Tujuan:** Mencegah login jarak jauh langsung menggunakan akun root.
-- **Rencana implementasi:** Mengubah konfigurasi SSH agar root tidak dapat login
-  secara langsung.
-- **Bukti before:** Nilai konfigurasi root login sebelum perubahan.
-- **Bukti after:** Nilai konfigurasi setelah perubahan dan hasil pengujian login.
+- **Status:** Implemented
+- **Tujuan:** Mencegah login jarak jauh secara langsung menggunakan akun root.
+- **Implementasi:** Mengubah konfigurasi efektif SSH dari
+  `PermitRootLogin without-password` menjadi `PermitRootLogin no`.
+- **Bukti before:** `PermitRootLogin without-password`.
+- **Bukti after:** `PermitRootLogin no`.
+- **Verifikasi lanjutan:** Melakukan pengujian login langsung menggunakan akun
+  root untuk memastikan koneksi ditolak.
 
 ### H-03: Menggunakan SSH Key Authentication
 
-- **Status:** Planned
-- **Tujuan:** Mengurangi ketergantungan pada autentikasi password.
-- **Rencana implementasi:** Menambahkan public key administrator pada Target Node.
-- **Bukti before:** Login masih menggunakan password.
-- **Bukti after:** Login menggunakan SSH key berhasil.
+- **Status:** Implemented
+- **Tujuan:** Mengurangi risiko penggunaan password dan credential guessing.
+- **Implementasi:**
+  - `PubkeyAuthentication yes`
+  - `PasswordAuthentication no`
+- **Bukti current state:** Output konfigurasi efektif SSH dari `sshd -T`.
+- **Catatan:** Konfigurasi public key authentication sudah aktif pada kondisi
+  awal dan dipertahankan setelah hardening.
+- **Verifikasi lanjutan:** Menguji login user non-root menggunakan public key
+  yang sah.
 
 ### H-04: Menerapkan Kebijakan Password
 
 - **Status:** Planned
-- **Tujuan:** Mengurangi risiko penggunaan password yang lemah.
+- **Tujuan:** Mengurangi risiko penggunaan password yang lemah pada akun lokal.
 - **Rencana implementasi:** Menetapkan panjang minimum, kompleksitas, dan
-  pembatasan percobaan login apabila didukung.
-- **Bukti before:** Konfigurasi password awal.
-- **Bukti after:** Konfigurasi password yang sudah diperbarui.
+  pembatasan penggunaan ulang password apabila relevan.
+- **Bukti before:** Konfigurasi kebijakan password awal.
+- **Bukti after:** Konfigurasi kebijakan password setelah perubahan.
+
+### H-04A: Membatasi Percobaan dan Koneksi SSH
+
+- **Status:** Implemented
+- **Tujuan:** Mengurangi risiko percobaan autentikasi berulang dan membatasi
+  koneksi SSH yang belum terautentikasi.
+- **Implementasi:**
+  - Mengubah `MaxAuthTries` dari `6` menjadi `3`.
+  - Mengubah `MaxStartups` dari `10:30:100` menjadi `5:30:20`.
+- **Bukti before:**
+  - `MaxAuthTries 6`
+  - `MaxStartups 10:30:100`
+- **Bukti after:**
+  - `MaxAuthTries 3`
+  - `MaxStartups 5:30:20`
+- **Konfigurasi yang tidak berubah:**
+  - `LoginGraceTime 120`
+  - `PerSourceMaxStartups none`
+- **Verifikasi lanjutan:** Menguji pembatasan autentikasi secara terkontrol pada
+  tahap pengujian berikutnya.
+
+---
 
 ## 5. Service and Attack Surface
 
@@ -79,29 +112,43 @@ Status yang digunakan dalam dokumen ini:
 
 - **Status:** In Progress
 - **Tujuan:** Membatasi koneksi masuk hanya untuk service yang diperlukan.
-- **Rencana implementasi:** Menggunakan UFW dengan kebijakan default deny incoming.
-- **Port yang direncanakan:**
-  - `22/TCP` untuk SSH
-  - `80/TCP` untuk HTTP
-  - `443/TCP` untuk HTTPS
-- **Bukti before:** Status firewall sebelum diaktifkan.
-- **Bukti after:** Status firewall dan daftar rule setelah hardening.
+- **Implementasi saat ini:** UFW telah aktif dengan kebijakan:
+  - `deny incoming`
+  - `allow outgoing`
+  - `deny routed`
+- **Port yang saat ini diizinkan:**
+  - `22/TCP`
+  - `80/TCP`
+  - `443/TCP`
+  - `8080/TCP`
+- **Bukti before:** Tidak terdokumentasi.
+- **Bukti current state:** Output `sudo ufw status verbose`.
+- **Catatan:** Rule masih menerima koneksi dari `Anywhere` untuk IPv4 dan IPv6.
+- **Tindak lanjut:** Membatasi rule berdasarkan kebutuhan service dan jaringan
+  Tailscale.
 
 ### H-06: Menutup Port yang Tidak Diperlukan
 
-- **Status:** Planned
+- **Status:** In Progress
 - **Tujuan:** Mengurangi jumlah service yang dapat diakses dari jaringan.
-- **Rencana implementasi:** Memeriksa listening port dan menutup service yang tidak
-  digunakan.
-- **Bukti before:** Hasil pemeriksaan port sebelum hardening.
-- **Bukti after:** Hasil pemeriksaan port setelah hardening.
+- **Rencana implementasi:** Memeriksa listening port dan menutup port yang tidak
+  mendukung fungsi Target Node.
+- **Port yang direncanakan:**
+  - `2222/TCP` untuk SSH
+  - `8080/TCP` untuk ThingsBoard
+  - Port database hanya untuk akses internal
+- **Catatan:** Rule UFW masih mengizinkan port `22`, meskipun SSH terdeteksi
+  menggunakan port `2222`.
+- **Tindak lanjut:** Menyesuaikan rule UFW dengan konfigurasi SSH aktual.
+- **Bukti before:** Output port dan rule firewall saat ini.
+- **Bukti after:** Output port dan rule firewall setelah pembatasan.
 
 ### H-07: Menonaktifkan Service yang Tidak Digunakan
 
 - **Status:** Planned
 - **Tujuan:** Mengurangi attack surface dan penggunaan resource.
 - **Rencana implementasi:** Mengidentifikasi service aktif, lalu menonaktifkan
-  service yang tidak mendukung fungsi Target Node.
+  service yang tidak mendukung Target Node.
 - **Bukti before:** Daftar service aktif.
 - **Bukti after:** Daftar service setelah hardening.
 
@@ -113,22 +160,25 @@ Status yang digunakan dalam dokumen ini:
 - **Bukti before:** Daftar package yang dapat diperbarui.
 - **Bukti after:** Riwayat update dan status package.
 
+---
+
 ## 6. Data and Application Security
 
 ### H-09: Membatasi Akses Database
 
 - **Status:** Planned
-- **Tujuan:** Mencegah database diakses langsung oleh Attacker Node.
-- **Rencana implementasi:** Mengikat database ke localhost atau interface internal.
-- **Bukti before:** Alamat dan port database sebelum pembatasan.
-- **Bukti after:** Database hanya menerima koneksi yang dibutuhkan aplikasi.
+- **Tujuan:** Mencegah PostgreSQL diakses langsung oleh Attacker Node.
+- **Rencana implementasi:** Membatasi PostgreSQL agar hanya menerima koneksi
+  dari localhost atau service yang membutuhkan.
+- **Bukti before:** Listening address dan port PostgreSQL sebelum pembatasan.
+- **Bukti after:** PostgreSQL hanya menerima koneksi internal yang diperlukan.
 
 ### H-10: Menggunakan Database User dengan Least Privilege
 
 - **Status:** Planned
-- **Tujuan:** Membatasi dampak jika akun aplikasi mengalami kompromi.
-- **Rencana implementasi:** Membuat akun database khusus untuk aplikasi dengan
-  privilege minimum.
+- **Tujuan:** Membatasi dampak jika credential aplikasi mengalami kompromi.
+- **Rencana implementasi:** Membuat akun PostgreSQL khusus ThingsBoard atau
+  aplikasi dengan privilege minimum.
 - **Bukti before:** Hak akses database awal.
 - **Bukti after:** Hak akses akun aplikasi setelah pembatasan.
 
@@ -138,9 +188,9 @@ Status yang digunakan dalam dokumen ini:
 - **Tujuan:** Menolak input yang tidak sesuai format dan mengurangi risiko
   manipulasi request.
 - **Rencana implementasi:** Melakukan validasi tipe data, panjang input, field
-  wajib, dan format request.
+  wajib, dan format request pada endpoint API.
 - **Bukti before:** Request tidak valid masih diterima atau belum ditangani.
-- **Bukti after:** Request tidak valid ditolak dengan respons yang sesuai.
+- **Bukti after:** Request tidak valid ditolak dengan response yang sesuai.
 
 ### H-12: Memisahkan Credential dari Source Code
 
@@ -150,8 +200,10 @@ Status yang digunakan dalam dokumen ini:
 - **Rencana implementasi:** Menyimpan credential pada environment variable atau
   file konfigurasi yang tidak dimasukkan ke Git.
 - **Bukti before:** Metode penyimpanan konfigurasi awal.
-- **Bukti after:** Credential dipindahkan dan file sensitif tercantum dalam
+- **Bukti after:** Credential dipindahkan dan file sensitif dicantumkan dalam
   `.gitignore`.
+
+---
 
 ## 7. Logging and Monitoring
 
@@ -166,8 +218,8 @@ Status yang digunakan dalam dokumen ini:
 ### H-14: Mengaktifkan Web Access dan Error Log
 
 - **Status:** Planned
-- **Tujuan:** Mencatat request yang diterima oleh web application dan API.
-- **Rencana implementasi:** Mengaktifkan access log dan error log pada web server.
+- **Tujuan:** Mencatat request yang diterima oleh ThingsBoard dan service web.
+- **Rencana implementasi:** Memastikan access log dan error log tersedia.
 - **Bukti before:** Kondisi konfigurasi logging awal.
 - **Bukti after:** Log HTTP yang memuat timestamp, source address, method, path,
   dan status code.
@@ -175,67 +227,41 @@ Status yang digunakan dalam dokumen ini:
 ### H-15: Menyiapkan Application Log
 
 - **Status:** Planned
-- **Tujuan:** Mencatat aktivitas penting pada web application dan API.
-- **Rencana implementasi:** Mencatat keberhasilan dan kegagalan autentikasi,
-  request tidak valid, serta error aplikasi.
+- **Tujuan:** Mencatat aktivitas penting pada backend IoT dan ThingsBoard.
+- **Rencana implementasi:** Mencatat autentikasi, request tidak valid, serta
+  error aplikasi tanpa menyimpan password atau token.
 - **Bukti before:** Logging aplikasi belum tersedia atau masih terbatas.
-- **Bukti after:** Event aplikasi tercatat tanpa menyimpan password atau token.
+- **Bukti after:** Event aplikasi tercatat tanpa informasi sensitif.
+
+---
 
 ## 8. Ringkasan Kontrol
 
 | ID | Kontrol | Kategori | Status |
 |---|---|---|---|
-| H-01 | User non-root | Access and Authentication | Planned |
-| H-02 | Disable SSH root login | Access and Authentication | Planned |
-| H-03 | SSH key authentication | Access and Authentication | Planned |
+| H-01 | User non-root | Access and Authentication | Implemented |
+| H-02 | Disable SSH root login | Access and Authentication | Implemented |
+| H-03 | SSH key authentication | Access and Authentication | Implemented |
 | H-04 | Password policy | Access and Authentication | Planned |
-| H-05 | Host firewall | Service and Attack Surface | Planned |
-| H-06 | Close unnecessary ports | Service and Attack Surface | Planned |
+| H-04A | Restrict SSH authentication attempts | Access and Authentication | Implemented |
+| H-05 | Host firewall | Service and Attack Surface | In Progress |
+| H-06 | Close unnecessary ports | Service and Attack Surface | In Progress |
 | H-07 | Disable unused services | Service and Attack Surface | Planned |
 | H-08 | Security update | Service and Attack Surface | Planned |
-| H-09 | Restrict database access | Data and Application | Planned |
-| H-10 | Least-privilege database user | Data and Application | Planned |
+| H-09 | Restrict PostgreSQL access | Data and Application | Planned |
+| H-10 | Least-privilege PostgreSQL user | Data and Application | Planned |
 | H-11 | Application input validation | Data and Application | Planned |
 | H-12 | Separate credentials from source code | Data and Application | Planned |
 | H-13 | Authentication logging | Logging and Monitoring | Planned |
 | H-14 | Web access and error logging | Logging and Monitoring | Planned |
 | H-15 | Application logging | Logging and Monitoring | Planned |
 
-## 9. Rencana Pengumpulan Bukti
+---
 
-Setiap kontrol yang diterapkan akan memiliki bukti berupa:
+## 9. Bukti Hardening
 
-1. Screenshot atau output kondisi sebelum hardening.
-2. Konfigurasi atau command yang digunakan.
-3. Screenshot atau output kondisi setelah hardening.
-4. Hasil pengujian untuk memastikan kontrol bekerja.
-5. Penjelasan singkat mengenai perubahan dan dampaknya.
+Bukti disimpan pada:
 
-Bukti akan disimpan pada:
 ```
 docs/hardening/assets/
 ```
-## 10. Prioritas Implementasi
-
-Kontrol yang diprioritaskan pada implementasi awal:
-
-Security update
-User non-root
-Host firewall
-Penutupan port yang tidak diperlukan
-Pembatasan akses database
-Authentication logging
-Web access logging
-Pemisahan credential dari source code
-
-Kontrol lain akan diterapkan sesuai kebutuhan dan teknologi aplikasi yang digunakan.
-
-## 11. Catatan
-
-Dokumen ini masih berupa rencana awal. Daftar kontrol dapat berubah setelah:
-
-Web application dan database final ditentukan
-Target Node berhasil diimplementasikan
-Topologi jaringan selesai diuji
-Kelompok menerima arahan dari dosen atau asisten praktikum
-Attack plan Red Team selesai disusun
